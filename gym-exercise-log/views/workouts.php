@@ -6,79 +6,52 @@ $sql = "SELECT * FROM workouts ORDER BY workout_date DESC";
 $result = $conn->query($sql);
 ?>
 
-<! DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>Workouts - Gym Exercise Log</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Workouts - Gym Exercise Log</title>
-    <link rel="stylesheet" href="../../styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Cormorant+Garamond:wght@300;400;500&display=swap" rel="stylesheet">
+    <!-- Use existing main stylesheet -->
+    <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
-    <div class="page-container">
-        <!-- Header -->
-        <header class="page-header">
-            <div class="ornament-top"></div>
-            <h1 class="page-title">My Workouts</h1>
-            <p class="page-subtitle">A comprehensive record of your training journey</p>
-            <div class="divider"></div>
-        </header>
+<div class="page-container">
 
-        <!-- Action Buttons -->
-        <div class="action-buttons">
-            <a href="add_workout.php" class="btn btn-primary">
-                <span>➕</span> Add New Workout
-            </a>
-            <a href="../../index.html" class="btn">
-                <span>⬅</span> Back to Home
-            </a>
-        </div>
+    <header class="page-header">
+        <h1 class="page-title">My Workouts</h1>
+        <p class="page-subtitle">Track your progress with precision and style</p>
+    </header>
 
-        <!-- Workouts Table -->
-        <?php if ($result && $result->num_rows > 0): ?>
-            <table class="workout-table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Workout Type</th>
-                        <th>Notes</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php while ($row = $result->fetch_assoc()): ?>
-                    <tr>
-                        <td><?= htmlspecialchars($row['workout_date']) ?></td>
-                        <td><?= htmlspecialchars($row['workout_type']) ?></td>
-                        <td><?= htmlspecialchars($row['notes']) ?></td>
-                        <td>
-                            <a href="exercises. php?workout_id=<?= $row['id'] ?>" class="btn btn-view">
-                                💪 Exercises
-                            </a>
-                            <a href="delete_workout.php?id=<?= $row['id'] ?>" 
-                               class="btn btn-delete"
-                               onclick="return confirm('Are you certain you wish to remove this workout?  This action cannot be undone.')">
-                                ❌ Delete
-                            </a>
-                        </td>
-                    </tr>
-                    <?php endwhile; ?>
-                </tbody>
-            </table>
-        <?php else: ?>
-            <div class="empty-state">
-                <p>No workouts recorded yet. Begin your fitness journey by adding your first workout. </p>
-            </div>
-        <?php endif; ?>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <div class="ornament-bottom"></div>
-            <p class="footer-text">Excellence in Every Repetition</p>
-        </footer>
+    <div class="action-buttons">
+        <a class="btn btn-primary" href="add_workout.php">➕ Add Workout</a>
+        <a class="btn btn-view" href="../index.php">⬅ Back to Main Page</a>
     </div>
+
+    <table class="workout-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Notes</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php while ($row = $result->fetch_assoc()): ?>
+            <tr>
+                <td><?= $row['workout_date'] ?></td>
+                <td><?= $row['workout_type'] ?></td>
+                <td><?= $row['notes'] ?></td>
+                <td>
+                    <a class="btn btn-view" href="exercises.php?workout_id=<?= $row['id'] ?>">💪 Exercises</a>
+                    <a class="btn btn-delete" href="delete_workout.php?id=<?= $row['id'] ?>" onclick="return confirm('Delete this workout?')">❌ Delete</a>
+                </td>
+            </tr>
+        <?php endwhile; ?>
+        </tbody>
+    </table>
+
+</div>
 </body>
 </html>

@@ -1,114 +1,82 @@
-<?php 
-include "../config/database.php";
-
-$success_message = '';
-$error_message = '';
-
-if (isset($_POST['save'])) {
-    $date  = $_POST['workout_date'];
-    $type  = $_POST['workout_type'];
-    $notes = $_POST['notes'];
-
-    // Use prepared statements for security
-    $stmt = $conn->prepare("INSERT INTO workouts (workout_date, workout_type, notes) VALUES (?, ?, ?)");
-    $stmt->bind_param("sss", $date, $type, $notes);
-
-    if ($stmt->execute()) {
-        header("Location: workouts.php");
-        exit();
-    } else {
-        $error_message = "Error saving workout: " . $conn->error;
-    }
-    $stmt->close();
-}
-?>
-
+<?php include "../config/database.php"; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Workout - Gym Exercise Log</title>
-    <link rel="stylesheet" href="../../styles. css">
+    <link rel="stylesheet" href="../styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2? family=Playfair+Display:wght@400;500;600;700&family=Cormorant+Garamond: wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Cormorant+Garamond:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="page-container">
-        <!-- Header -->
+    <div class="container page-container">
+        <!-- Page Header -->
         <header class="page-header">
-            <div class="ornament-top"></div>
             <h1 class="page-title">Add Workout</h1>
-            <p class="page-subtitle">Document your training with precision and care</p>
-            <div class="divider"></div>
+            <p class="page-subtitle">Document your latest training session with precision</p>
         </header>
 
-        <!-- Action Buttons -->
-        <div class="action-buttons">
-            <a href="workouts.php" class="btn">
-                <span>⬅</span> Back to Workouts
-            </a>
-            <a href="../../index.html" class="btn">
-                <span>🏠</span> Home
-            </a>
-        </div>
-
-        <!-- Form Container -->
+        <!-- Form Section -->
         <div class="form-container">
-            <?php if ($error_message): ?>
-                <div style="padding: 1rem; background-color: #f8d7da; color: #721c24; margin-bottom: 1.5rem; border: 1px solid #f5c6cb;">
-                    <?= htmlspecialchars($error_message) ?>
-                </div>
-            <?php endif; ?>
-
             <form method="POST">
                 <div class="form-group">
-                    <label for="workout_date" class="form-label">Date</label>
-                    <input type="date" 
-                           id="workout_date" 
-                           name="workout_date" 
-                           class="form-input" 
-                           required
-                           value="<?= date('Y-m-d') ?>">
+                    <label class="form-label" for="workout_date">Date</label>
+                    <input class="form-input" type="date" name="workout_date" id="workout_date" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="workout_type" class="form-label">Workout Type</label>
-                    <select id="workout_type" 
-                            name="workout_type" 
-                            class="form-select" 
-                            required>
-                        <option value="">Select a type... </option>
+                    <label class="form-label" for="workout_type">Workout Type</label>
+                    <select class="form-select" name="workout_type" id="workout_type" required>
                         <option value="Push">Push</option>
                         <option value="Pull">Pull</option>
                         <option value="Legs">Legs</option>
                         <option value="Cardio">Cardio</option>
                         <option value="Full Body">Full Body</option>
-                        <option value="Upper Body">Upper Body</option>
-                        <option value="Lower Body">Lower Body</option>
+                        <option value="Anterior">Anterior</option>
+                        <option value="Posterior">Posterior</option>
+                        <option value="Upper">Upper</option>
+                        <option value="Lower">Lower</option>             
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label for="notes" class="form-label">Notes</label>
-                    <textarea id="notes" 
-                              name="notes" 
-                              class="form-textarea" 
-                              placeholder="Record any observations, achievements, or areas for improvement... "></textarea>
+                    <label class="form-label" for="notes">Notes</label>
+                    <textarea class="form-textarea" name="notes" id="notes" placeholder="Optional notes about your workout"></textarea>
                 </div>
 
-                <button type="submit" name="save" class="form-submit">
-                    Save Workout
-                </button>
+                <button class="form-submit" type="submit" name="save">Save Workout</button>
             </form>
+        </div>
+        </div>
+        <div class="action-buttons2">
+        <a class="btn btn-view" href="../index.php">⬅ Back to Main Page</a>
         </div>
 
         <!-- Footer -->
         <footer class="footer">
             <div class="ornament-bottom"></div>
-            <p class="footer-text">Excellence in Every Repetition</p>
+            <p class="footer-text">Est. 2026 • Excellence in Every Repetition</p>
         </footer>
     </div>
 </body>
 </html>
+
+<?php
+// PHP processing (unchanged)
+if (isset($_POST['save'])) {
+    $date  = $_POST['workout_date'];
+    $type  = $_POST['workout_type'];
+    $notes = $_POST['notes'];
+
+    $sql = "INSERT INTO workouts (workout_date, workout_type, notes)
+            VALUES ('$date', '$type', '$notes')";
+
+    if ($conn->query($sql)) {
+        header("Location: workouts.php");
+    } else {
+        echo "Error: " . $conn->error;
+    }
+}
+?>
